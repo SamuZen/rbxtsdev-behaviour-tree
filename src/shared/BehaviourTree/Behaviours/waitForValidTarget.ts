@@ -6,4 +6,4 @@ const selector = new Selector();
 selector.addChild(hasValidTarget);
 selector.addChild(findNewTarget);
 
-export { selector as waitForValidTarget };
+export { selector as lookForValidTarget };

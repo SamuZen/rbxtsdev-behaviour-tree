@@ -6,6 +6,7 @@ const sequence = new MemorySequence();
 //pick random position around
 sequence.addChild(
 	new Action((blackBoard: Blackboard) => {
+		const handle = blackBoard.getVariable("handle") as BasePart;
 		const originPosition = blackBoard.getVariable("spawnPosition") as Vector3;
 		const wanderDistance = blackBoard.getVariable("wanderDistance") as number;
 		const minDistance = blackBoard.getVariable("minDistance") as number;
@@ -13,6 +14,7 @@ sequence.addChild(
 		const wanderPosition = originPosition.add(
 			new Vector3(math.random(-wanderDistance, wanderDistance), 0, math.random(-wanderDistance, wanderDistance)),
 		);
+		warn(handle.Name, " Setting wanderPosition:", wanderPosition);
 		blackBoard.setVariable("wanderPosition", wanderPosition);
 	}),
 );
@@ -23,8 +25,10 @@ sequence.addChild(
 		const wanderPosition = blackBoard.getVariable("wanderPosition") as Vector3;
 		const speed = blackBoard.getVariable("speed") as number;
 
+		warn(handle.Name, " - wanderPosition", wanderPosition);
+
 		//is close to position?
-		const isClose = handle.Position.sub(wanderPosition).Magnitude < (blackBoard.getVariable("speed") as number);
+		const isClose = handle.CFrame.Position.sub(wanderPosition).Magnitude < speed;
 		if (isClose) {
 			handle.CFrame = new CFrame(wanderPosition);
 			return NodeStatus.SUCCESS;

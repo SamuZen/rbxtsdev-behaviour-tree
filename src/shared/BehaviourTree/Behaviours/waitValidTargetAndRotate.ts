@@ -1,10 +1,10 @@
 import { Action, Sequence } from "@rbxts/behaviour-tree";
 import { Blackboard } from "@rbxts/behaviour-tree/out/Blackboard";
-import { waitForValidTarget } from "./waitForValidTarget";
+import { lookForValidTarget } from "./waitForValidTarget";
 
 const sequence = new Sequence();
 
-sequence.addChild(waitForValidTarget);
+sequence.addChild(lookForValidTarget);
 sequence.addChild(
 	new Action((blackBoard: Blackboard) => {
 		const handle = blackBoard.getVariable("handle") as BasePart;

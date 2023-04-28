@@ -12,6 +12,7 @@ export const isCurrentTargetValid = new Condition((blackBoard: Blackboard) => {
 
 	const maxDistance = blackBoard.getVariable("maxTargetDistance") as number;
 	if (distance > maxDistance) {
+		blackBoard.setVariable("target", undefined);
 		return false;
 	}
 
