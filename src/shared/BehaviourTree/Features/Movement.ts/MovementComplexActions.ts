@@ -2,19 +2,29 @@ import { Action, MemorySequence, NodeStatus } from "@rbxts/behaviour-tree";
 
 const Players = game.GetService("Players");
 
-export const ActionComplexMoveNearSpawn = (): MemorySequence => {
+export const ActionComplexMoveNearSpawn = (walkSpeed: number, maxDistance: number, restTime: number): MemorySequence => {
 	const memorySequence = new MemorySequence();
 
 	memorySequence.addChild(
 		new Action((blackBoard) => {
+
+			const spawnPart = blackBoard.getVariable("spawnPart") as BasePart;
+
+			const x = (math.random() - 0.5) * spawnPart.Size.X;
+			const y = (math.random() - 0.5) * spawnPart.Size.Y;
+			const z = (math.random() - 0.5) * spawnPart.Size.Z;
+
+			const newCFrame = spawnPart.CFrame.mul(new CFrame(x,y,z));
+			blackBoard.setVariable("moveToPosition", newCFrame.Position);
+			return NodeStatus.SUCCESS;
+
 			const originPosition = blackBoard.getVariable("spawnPosition") as Vector3;
-			const wanderDistance = blackBoard.getVariable("wanderDistance") as number;
 
 			const wanderPosition = originPosition.add(
 				new Vector3(
-					math.random(-wanderDistance, wanderDistance),
+					math.random(-maxDistance, maxDistance),
 					0,
-					math.random(-wanderDistance, wanderDistance),
+					math.random(-maxDistance, maxDistance),
 				),
 			);
 			blackBoard.setVariable("moveToPosition", wanderPosition);
@@ -26,10 +36,9 @@ export const ActionComplexMoveNearSpawn = (): MemorySequence => {
 		new Action((blackBoard) => {
 			const handle = blackBoard.getVariable("handle") as BasePart;
 			const moveToPosition = blackBoard.getVariable("moveToPosition") as Vector3;
-			const speed = blackBoard.getVariable("speed") as number;
 
 			//is close to position?
-			const isClose = handle.CFrame.Position.sub(moveToPosition).Magnitude < speed;
+			const isClose = handle.CFrame.Position.sub(moveToPosition).Magnitude < walkSpeed;
 			if (isClose) {
 				handle.CFrame = new CFrame(moveToPosition);
 				return NodeStatus.SUCCESS;
@@ -37,7 +46,7 @@ export const ActionComplexMoveNearSpawn = (): MemorySequence => {
 
 			// Mover o Handle em direção a posição com a velocidade definida
 			const direction = moveToPosition.sub(handle.Position).Unit;
-			handle.CFrame = handle.CFrame.add(direction.mul(speed));
+			handle.CFrame = handle.CFrame.add(direction.mul(walkSpeed));
 
 			return NodeStatus.RUNNING;
 		}),
@@ -45,7 +54,6 @@ export const ActionComplexMoveNearSpawn = (): MemorySequence => {
 
 	memorySequence.addChild(
 		new Action((blackBoard) => {
-			const t = blackBoard.getVariable("waitTime") as number;
 			if (blackBoard.getVariable("endTime") !== undefined) {
 				const timeLeft = (blackBoard.getVariable("endTime") as number) - time();
 				if (timeLeft <= 0) {
@@ -55,7 +63,7 @@ export const ActionComplexMoveNearSpawn = (): MemorySequence => {
 				return NodeStatus.RUNNING;
 			}
 
-			const endTime = time() + t;
+			const endTime = time() + restTime;
 			blackBoard.setVariable("endTime", endTime);
 			return NodeStatus.RUNNING;
 		}),

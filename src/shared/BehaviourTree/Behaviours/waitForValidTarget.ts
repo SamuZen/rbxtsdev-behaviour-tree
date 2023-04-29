@@ -4,6 +4,6 @@ import { ActionFindTarget } from "../Features/Target/TargetActions";
 
 const selector = new Selector();
 selector.addChild(hasValidTarget);
-selector.addChild(ActionFindTarget());
+selector.addChild(ActionFindTarget(10));
 
 export { selector as lookForValidTarget };
