@@ -10,7 +10,8 @@ export const ActionFindTarget = (): Action => {
 			if (player.Character) {
 				//calculate distance from handle to player character
 				if (handle.Position.sub(player.Character.GetPivot().Position).Magnitude < maxTargetDistance) {
-					blackBoard.setVariable("target", player.Character.PrimaryPart);
+					const part = player.Character.PrimaryPart
+					blackBoard.setVariable("target", part);
 					return NodeStatus.SUCCESS;
 				}
 			}

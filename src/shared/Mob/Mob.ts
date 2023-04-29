@@ -7,8 +7,10 @@ import {
 } from "shared/BehaviourTree/Features/Blackboard/BlackboardConditions";
 
 import { ActionWarnReturn } from "shared/BehaviourTree/Features/Log/LogActions";
+import { ActionWalkToTarget } from "shared/BehaviourTree/Features/Movement.ts/MovementActions";
 import { ActionComplexMoveNearSpawn } from "shared/BehaviourTree/Features/Movement.ts/MovementComplexActions";
 import { ActionFindTarget } from "shared/BehaviourTree/Features/Target/TargetActions";
+import { CondIsTargetCloserThan } from "shared/BehaviourTree/Features/Target/TargetConditions";
 
 export class Mob {
 	private behaviourTree: BehaviourTree;
@@ -34,9 +36,8 @@ export class Mob {
 		root.addChild(selector);
 
 		const sequence = new Sequence().addCondition(CondHasBlackboardVariable("target"));
-		sequence.addChild(ActionSetBlackboardVariable("target", undefined));
-		// sequence.addChild(isCurrentTargetValid);
-		// sequence.addChild(walkToTarget);
+		sequence.addChild(CondIsTargetCloserThan(10).case(false, ActionSetBlackboardVariable("target", undefined)));
+		sequence.addChild(ActionWalkToTarget(0.2, 3));
 		root.addChild(sequence);
 
 		this.behaviourTree = new BehaviourTree(root, blackBoard);
