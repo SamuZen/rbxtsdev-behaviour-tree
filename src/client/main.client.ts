@@ -16,6 +16,6 @@ function createMob(i: number) {
 	RunService.Heartbeat.Connect(() => mob.update());
 }
 
-for (let i = 0; i < 1; i++) {
+for (let i = 0; i < 500; i++) {
 	createMob(i);
 }

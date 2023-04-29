@@ -1,13 +1,14 @@
-import { Action, BehaviourTree, Condition, Selector, Sequence } from "@rbxts/behaviour-tree";
+import { BehaviourTree, NodeStatus, Selector, Sequence } from "@rbxts/behaviour-tree";
 import { Blackboard } from "@rbxts/behaviour-tree/out/Blackboard";
-import { findNewTarget } from "shared/BehaviourTree/BaseNodes/findNewTarget";
-import { lookForValidTarget } from "shared/BehaviourTree/Behaviours/waitForValidTarget";
-import { waitValidTargetAndRotate } from "shared/BehaviourTree/Behaviours/waitValidTargetAndRotate";
-import { walkAround } from "shared/BehaviourTree/Behaviours/walkAround";
-import { walkToTarget } from "shared/BehaviourTree/Behaviours/walkToTarget";
-import { condHasTarget } from "shared/BehaviourTree/Conditions/condHasTarget";
-import { condNoTarget } from "shared/BehaviourTree/Conditions/condNoTarget";
-import { isCurrentTargetValid } from "shared/BehaviourTree/CoreNodes/isCurrentTargetValid";
+import { ActionSetBlackboardVariable } from "shared/BehaviourTree/Features/Blackboard/BlackboardActions";
+import {
+	CondHasBlackboardVariable,
+	CondNoBlackboardVariable,
+} from "shared/BehaviourTree/Features/Blackboard/BlackboardConditions";
+
+import { ActionWarnReturn } from "shared/BehaviourTree/Features/Log/LogActions";
+import { ActionComplexMoveNearSpawn } from "shared/BehaviourTree/Features/Movement.ts/MovementComplexActions";
+import { ActionFindTarget } from "shared/BehaviourTree/Features/Target/TargetActions";
 
 export class Mob {
 	private behaviourTree: BehaviourTree;
@@ -27,14 +28,15 @@ export class Mob {
 		//this.behaviourTree = new BehaviourTree(waitValidTargetAndRotate, blackBoard);
 		const root = new Selector();
 
-		const selector = new Selector().addCondition(condNoTarget);
-		selector.addChild(findNewTarget);
-		selector.addChild(walkAround);
+		const selector = new Selector().addCondition(CondNoBlackboardVariable("target"));
+		selector.addChild(ActionFindTarget());
+		selector.addChild(ActionComplexMoveNearSpawn());
 		root.addChild(selector);
 
-		const sequence = new Sequence().addCondition(condHasTarget);
-		sequence.addChild(isCurrentTargetValid);
-		sequence.addChild(walkToTarget);
+		const sequence = new Sequence().addCondition(CondHasBlackboardVariable("target"));
+		sequence.addChild(ActionSetBlackboardVariable("target", undefined));
+		// sequence.addChild(isCurrentTargetValid);
+		// sequence.addChild(walkToTarget);
 		root.addChild(sequence);
 
 		this.behaviourTree = new BehaviourTree(root, blackBoard);
