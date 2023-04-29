@@ -1,13 +1,34 @@
 import { Action, MemorySequence, NodeStatus } from "@rbxts/behaviour-tree";
+import { ActionMoveToPosition } from "./MovementActions";
 
 const Players = game.GetService("Players");
 
-export const ActionComplexMoveNearSpawn = (walkSpeed: number, maxDistance: number, restTime: number): MemorySequence => {
+export const ActionComplexDashForward = (walkSpeed: number, extraDistance: number): MemorySequence => {
+	const memorySequence = new MemorySequence();
+	
+	//get position behind the target
+	memorySequence.addChild(new Action((blackBoard) => {
+		const handle = blackBoard.getVariable("handle") as BasePart;
+		const target = blackBoard.getVariable("target") as BasePart;
+
+		const distanceToTarget = handle.Position.sub(target.Position).Magnitude;
+		const direction = target.Position.sub(new Vector3(handle.Position.X, target.Position.Y, handle.Position.Z)).Unit;
+
+		blackBoard.setVariable("moveToPosition", handle.Position.add(direction.mul(distanceToTarget + extraDistance)));
+		return NodeStatus.SUCCESS;
+	}));
+
+	memorySequence.addChild(ActionMoveToPosition(walkSpeed));
+	
+	return memorySequence
+};
+
+
+export const ActionComplexMoveNearSpawn = (walkSpeed: number, restTime: number): MemorySequence => {
 	const memorySequence = new MemorySequence();
 
 	memorySequence.addChild(
 		new Action((blackBoard) => {
-
 			const spawnPart = blackBoard.getVariable("spawnPart") as BasePart;
 
 			const x = (math.random() - 0.5) * spawnPart.Size.X;
@@ -16,18 +37,6 @@ export const ActionComplexMoveNearSpawn = (walkSpeed: number, maxDistance: numbe
 
 			const newCFrame = spawnPart.CFrame.mul(new CFrame(x,y,z));
 			blackBoard.setVariable("moveToPosition", newCFrame.Position);
-			return NodeStatus.SUCCESS;
-
-			const originPosition = blackBoard.getVariable("spawnPosition") as Vector3;
-
-			const wanderPosition = originPosition.add(
-				new Vector3(
-					math.random(-maxDistance, maxDistance),
-					0,
-					math.random(-maxDistance, maxDistance),
-				),
-			);
-			blackBoard.setVariable("moveToPosition", wanderPosition);
 			return NodeStatus.SUCCESS;
 		}),
 	);
