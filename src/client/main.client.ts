@@ -12,9 +12,13 @@ function createMob(spawn: BasePart, mobType: string) {
 	part.PivotTo(spawn.CFrame);
 	part.Parent = Workspace;
 
-	//como pegar o RobotId por uma string?
-	//resposta: RobotId[mobType] as RobotId
-	const mob = new Mob(part, spawn, RobotId[mobType as keyof typeof RobotId]);
+	const level = tonumber(spawn.Name);
+
+	if (level === undefined) {
+		error("Spawn part must have a level number as Name.");
+	}
+
+	const mob = new Mob(part, spawn, RobotId[mobType as keyof typeof RobotId], level);
 	RunService.Heartbeat.Connect(() => mob.update());
 }
 

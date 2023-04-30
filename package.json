@@ -23,6 +23,6 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@rbxts/behaviour-tree": "file:../../Packages/rbxts-behaviour-tree/rbxts-behaviour-tree-1.0.0.tgz"
+    "@rbxts/behaviour-tree": "file:../../Packages/rbxts-behaviour-tree/rbxts-behaviour-tree-1.0.1.tgz"
   }
 }

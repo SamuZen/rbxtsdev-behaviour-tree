@@ -1,38 +1,31 @@
-import { DasherAgent } from "shared/BehaviourTree/Agents/DasherAgent";
+import { DasherAgent_1 } from "shared/BehaviourTree/Agents/Dasher/DasherAgent_1";
 import { RobotId } from "./ids";
 import { BehaviourTree } from "@rbxts/behaviour-tree";
 import { ElevatorAgent } from "shared/BehaviourTree/Agents/ElevatorAgent";
+import { DasherAgent_2 } from "shared/BehaviourTree/Agents/Dasher/DasherAgent_2";
 
 export type RobotsDBType = {
-    robots: {
-        [key in RobotId]: {
-            name: string,
-            description: string,
-            behaviour: (handle: BasePart, spawn: BasePart) => BehaviourTree;
-            baseStats: {
-                health: number,
-            },
-        }
-    }
-}
+	robots: {
+		[key in RobotId]: {
+			behaviours: {
+				[level: number]: (handle: BasePart, spawn: BasePart) => BehaviourTree;
+			};
+		};
+	};
+};
 
 export const RobotsDB: RobotsDBType = {
-    robots: {
-        [RobotId.Dasher]: {
-            name: "Dasher",
-            description: "Dasher is a robot that dashes around the map.",
-            behaviour: DasherAgent,
-            baseStats: {
-                health: 100,
-            }
-        },
-        [RobotId.Elevator]: {
-            name: "Elevator",
-            description: "Elevator is a robot that goes up and down.",
-            behaviour: ElevatorAgent,
-            baseStats: {
-                health: 100,
-            }
-        }
-    }
-}
+	robots: {
+		[RobotId.Dasher]: {
+			behaviours: {
+				[1]: DasherAgent_1,
+				[2]: DasherAgent_2,
+			},
+		},
+		[RobotId.Elevator]: {
+			behaviours: {
+				[1]: ElevatorAgent,
+			},
+		},
+	},
+};
