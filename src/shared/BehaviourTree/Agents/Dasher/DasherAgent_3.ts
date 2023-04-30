@@ -7,9 +7,10 @@ import { ActionComplexMoveNearSpawn } from "../../Features/Movement.ts/MovementC
 import { CondIsNearSpawn } from "../../Features/Movement.ts/MovementConditions";
 import { ActionFindTarget } from "../../Features/Target/TargetActions";
 import { CondIsTargetCloserThan } from "../../Features/Target/TargetConditions";
-import { SkillDash, SkillDashData } from "../../Features/Skills/Dash";
+import { SkillDashData } from "../../Features/Skills/Dash";
+import { SkillMultiSlice, SkillMultiSliceData } from "shared/BehaviourTree/Features/Skills/MultiSlice";
 
-export const DasherAgent_1 = (handle: BasePart, spawn: BasePart): BehaviourTree => {
+export const DasherAgent_3 = (handle: BasePart, spawn: BasePart): BehaviourTree => {
 	// ### Blackboard
 	const blackBoard = new Blackboard();
 	blackBoard.setVariable("handle", handle);
@@ -40,6 +41,18 @@ export const DasherAgent_1 = (handle: BasePart, spawn: BasePart): BehaviourTree 
 		activationInterval: 0.5,
 	};
 
+	// ## Skill MultiSlice Data
+	const multiSliceData: SkillMultiSliceData = {
+		cooldown: 5,
+		prepDuration: 1,
+		recoveryDuration: 0.5,
+		speed: 2.5,
+		pastTargetDistance: 10,
+		loseTargetDistance: 30,
+		numSlices: 5,
+		sliceDistance: 12,
+	};
+
 	// ### Behaviour Tree
 	const root = new Selector();
 
@@ -49,7 +62,7 @@ export const DasherAgent_1 = (handle: BasePart, spawn: BasePart): BehaviourTree 
 	root.addChild(selectorNoTarget);
 
 	const selectorTarget = new Selector().addCondition(CondHasBlackboardVariable("target"));
-	selectorTarget.addChild(SkillDash(dashData));
+	selectorTarget.addChild(SkillMultiSlice(multiSliceData));
 
 	const sequenceFollow = new Sequence();
 	sequenceFollow.addChild(

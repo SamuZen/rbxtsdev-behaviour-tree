@@ -1,4 +1,4 @@
-import { BehaviourTree, Selector, Sequence } from "@rbxts/behaviour-tree";
+import { BehaviourTree, Condition, Selector, Sequence } from "@rbxts/behaviour-tree";
 import { Blackboard } from "@rbxts/behaviour-tree/out/Blackboard";
 import { ActionSetBlackboardVariable } from "../../Features/Blackboard/BlackboardActions";
 import { CondNoBlackboardVariable, CondHasBlackboardVariable } from "../../Features/Blackboard/BlackboardConditions";
@@ -8,8 +8,9 @@ import { CondIsNearSpawn } from "../../Features/Movement.ts/MovementConditions";
 import { ActionFindTarget } from "../../Features/Target/TargetActions";
 import { CondIsTargetCloserThan } from "../../Features/Target/TargetConditions";
 import { SkillDash, SkillDashData } from "../../Features/Skills/Dash";
+import { SkillMultiSlice, SkillMultiSliceData } from "shared/BehaviourTree/Features/Skills/MultiSlice";
 
-export const DasherAgent_1 = (handle: BasePart, spawn: BasePart): BehaviourTree => {
+export const DasherAgent_5 = (handle: BasePart, spawn: BasePart): BehaviourTree => {
 	// ### Blackboard
 	const blackBoard = new Blackboard();
 	blackBoard.setVariable("handle", handle);
@@ -36,8 +37,21 @@ export const DasherAgent_1 = (handle: BasePart, spawn: BasePart): BehaviourTree 
 		speed: 0.6,
 		pastTargetDistance: 10,
 		loseTargetDistance: 30,
-		activationPercentage: 100,
-		activationInterval: 0.5,
+
+		activationPercentage: 50,
+		activationInterval: 3,
+	};
+
+	// ## Skill MultiSlice Data
+	const multiSliceData: SkillMultiSliceData = {
+		cooldown: 5,
+		prepDuration: 1,
+		recoveryDuration: 0.5,
+		speed: 8,
+		pastTargetDistance: 10,
+		loseTargetDistance: 30,
+		numSlices: 4,
+		sliceDistance: 20,
 	};
 
 	// ### Behaviour Tree
@@ -50,6 +64,7 @@ export const DasherAgent_1 = (handle: BasePart, spawn: BasePart): BehaviourTree 
 
 	const selectorTarget = new Selector().addCondition(CondHasBlackboardVariable("target"));
 	selectorTarget.addChild(SkillDash(dashData));
+	selectorTarget.addChild(SkillMultiSlice(multiSliceData));
 
 	const sequenceFollow = new Sequence();
 	sequenceFollow.addChild(

@@ -11,6 +11,7 @@ function createMob(spawn: BasePart, mobType: string) {
 	part.Anchored = true;
 	part.PivotTo(spawn.CFrame);
 	part.Parent = Workspace;
+	part.Name = spawn.Name;
 
 	const level = tonumber(spawn.Name);
 

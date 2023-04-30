@@ -36,6 +36,8 @@ export const DasherAgent_2 = (handle: BasePart, spawn: BasePart): BehaviourTree 
 		speed: 0.6,
 		pastTargetDistance: 10,
 		loseTargetDistance: 30,
+		activationPercentage: 100,
+		activationInterval: 0.5,
 	};
 
 	// ### Behaviour Tree
