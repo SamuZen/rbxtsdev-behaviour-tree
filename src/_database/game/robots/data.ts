@@ -3,6 +3,7 @@ import { RobotId } from "./ids";
 import { BehaviourTree } from "@rbxts/behaviour-tree";
 import { ElevatorAgent } from "shared/BehaviourTree/Agents/ElevatorAgent";
 import { DasherAgent_2 } from "shared/BehaviourTree/Agents/Dasher/DasherAgent_2";
+import { DasherAgent_0 } from "shared/BehaviourTree/Agents/Dasher/DasherAgent_0";
 
 export type RobotsDBType = {
 	robots: {
@@ -18,6 +19,7 @@ export const RobotsDB: RobotsDBType = {
 	robots: {
 		[RobotId.Dasher]: {
 			behaviours: {
+				[0]: DasherAgent_0,
 				[1]: DasherAgent_1,
 				[2]: DasherAgent_2,
 			},
