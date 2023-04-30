@@ -29,7 +29,7 @@ export const ElevatorAgent = (handle: BasePart, spawn: BasePart): BehaviourTree 
 
     const selector = new Selector().addCondition(CondNoBlackboardVariable("target"));
     selector.addChild(ActionFindTarget(engagementDistance));
-    selector.addChild(ActionComplexMoveNearSpawn(walkSpeed, maxDistance, restTime));
+    selector.addChild(ActionComplexMoveNearSpawn(walkSpeed, restTime));
     root.addChild(selector);
 
     const sequence = new Sequence().addCondition(CondHasBlackboardVariable("target"));

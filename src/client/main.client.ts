@@ -1,4 +1,5 @@
 import { Action, BehaviourTree, Condition, Sequence } from "@rbxts/behaviour-tree";
+import { RobotId } from "_database/game/robots/ids";
 import { Mob } from "shared/Mob/Mob";
 
 const RunService = game.GetService("RunService");
@@ -11,7 +12,9 @@ function createMob(spawn: BasePart, mobType: string) {
 	part.PivotTo(spawn.CFrame);
 	part.Parent = Workspace;
 
-	const mob = new Mob(part, spawn, mobType);
+	//como pegar o RobotId por uma string?
+	//resposta: RobotId[mobType] as RobotId
+	const mob = new Mob(part, spawn, RobotId[mobType as keyof typeof RobotId]);
 	RunService.Heartbeat.Connect(() => mob.update());
 }
 

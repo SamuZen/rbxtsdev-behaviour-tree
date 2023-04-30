@@ -25,6 +25,9 @@
 			},
 			"TS": {
 				"$path": "out/shared"
+			},
+			"Database": {
+				"$path": "out/_database"
 			}
 		},
 		"StarterPlayer": {

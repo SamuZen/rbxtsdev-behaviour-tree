@@ -9,14 +9,7 @@ export const ActionSetBlackboardVariable = (variableName: string, value: unknown
 
 export const ActionSetBlackboardVariableFunc = (variableName: string, func: () => unknown): Action => {
 	return new Action((blackBoard) => {
-
-		if (variableName === "UseSkillDash") {
-			print(blackBoard.getVariable("UseSkillDash"));
-		}
 		blackBoard.setVariable(variableName, func());
-		if (variableName === "UseSkillDash") {
-			print(blackBoard.getVariable("UseSkillDash"));
-		}
 		return NodeStatus.SUCCESS;
 	});
 };
